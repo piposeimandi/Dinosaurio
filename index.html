@@ -39,6 +39,12 @@ body {
             margin: 0; /* Asegúrate de que no haya márgenes predeterminados */
         }
 
+:root {
+    --dino-size-desktop: 10vh;
+    --dino-size-mobile: 12vh;
+    --dino-frame-width: var(--dino-size-desktop); /* Default to desktop size */
+}
+
 .contenedor {
     width: 90%; /* Usa porcentajes para adaptar el ancho al tamaño de la pantalla */
     max-width: 900px; /* Establece un ancho máximo para evitar que crezca demasiado en pantallas grandes */
@@ -74,10 +80,8 @@ body {
        This needs to be dynamic if container height changes. Let's use a fixed aspect ratio approach.
        Let's set height to 10vh for simplicity and calculate width based on that.
     */
-    height: 10vh; /* Use vh for dinosaur height */
-    /* Width calculation: original_width / original_height * new_height */
-    /* Original aspect ratio is 84/84 = 1. So width = 1 * 10vh = 10vh */
-    width: 10vh; 
+    height: var(--dino-frame-width); 
+    width: var(--dino-frame-width); 
 
 
     position: absolute;
@@ -89,30 +93,17 @@ body {
 
     background: url(img/dino.png) repeat-x 0px 0px;
     /* background-size: 336px 84px; */ /* Original background size */
-    /* New background-size: (original_bg_width / original_dino_height * new_dino_height) new_dino_height */
-    /* (336 / 84 * 10vh) 10vh  = 40vh 10vh */
-    background-size: calc(4 * 10vh) 10vh; /* Scaled background size */
-    background-position-x: 0px;
+    background-size: calc(4 * var(--dino-frame-width)) var(--dino-frame-width); /* Scaled background size */
+    background-position-x: 0px; /* Initial static frame */
 
 }
 
 .dino-corriendo {
-    /* animation: animarDino 0.25s steps(2) infinite; */
-    /* Frame width is new_dino_width, which is 10vh.
-       The animation moves by one frame width.
-       So from -10vh to -30vh (for steps(2), it means positions for frame 2 and frame 3 if 0 is frame 1)
-       Original animation from -84px to -252px.
-       Frame 1: 0px
-       Frame 2 (step 1 in animation): -84px (original_width_frame1)
-       Frame 3 (step 2 in animation): -168px (original_width_frame2, not -252px for steps(2))
-       Let's adjust animarDino keyframes instead of direct properties here.
-    */
-    animation: animarDino 0.25s steps(2) infinite;
+    animation: animarDino 0.3s linear infinite; /* Use linear and explicit keyframes */
 }
 .dino-estrellado {
     /* background-position-x: -252px; */ /* Original. This is frame 4 (dino_width * 3) */
-    /* New position: -(new_dino_width * 3) = -(10vh * 3) = -30vh */
-    background-position-x: calc(-3 * 10vh); /* Scaled background position */
+    background-position-x: calc(-3 * var(--dino-frame-width)); /* Scaled background position */
 }
 
 .suelo {
@@ -205,36 +196,12 @@ body {
 }
 
     @keyframes animarDino{
-        from{
-            /* background-position-x: -84px; */ /* Original, dino_width */
-            background-position-x: calc(-1 * 10vh); /* -new_dino_width */
-        }
-        to{
-            /* background-position-x: -252px; */ /* Original, dino_width * 3 for steps(2) means frame 2 and 3 */
-            /* steps(2) means it alternates between two positions.
-               If 'from' is frame 2 (width * 1), 'to' should be frame 3 (width * 2)
-               The animation goes from state 1 to state 2.
-               State 1: background-position-x: calc(-1 * 10vh); (Image frame 2)
-               State 2: background-position-x: calc(-2 * 10vh); (Image frame 3)
-               The original 'to' was -252px which is 3 * 84px. This implies 3 frames in the sprite sheet are used.
-               Sprite sheet: Frame 0 (idle), Frame 1 (run1), Frame 2 (run2), Frame 3 (crashed)
-               dino-corriendo uses frames 1 and 2.
-               So, background-position-x should be -frame_width for frame 1, and -frame_width*2 for frame 2.
-               Original: from -84px (frame 1) to -252px. This seems wrong for steps(2).
-               steps(2) means it will jump between two values.
-               If the sprite has 4 images for dino (0, 1, 2, 3) each 10vh wide:
-               Initial state (not running): 0px
-               Running anim step 1: -10vh (image 2)
-               Running anim step 2: -20vh (image 3)
-               Crashed state: -30vh (image 4)
-
-               Let's assume the animation is for the two running frames.
-               So, from -10vh (second frame in sprite) to -20vh (third frame in sprite)
-            */
-            background-position-x: calc(-2 * 10vh);
-        }
+        0% { background-position-x: calc(-1 * var(--dino-frame-width)); } /* Corriendo 1 */
+        50% { background-position-x: calc(-2 * var(--dino-frame-width)); } /* Corriendo 2 */
+        100% { background-position-x: calc(-1 * var(--dino-frame-width)); } /* Vuelve a Corriendo 1 */
     }
 
+    /* Removed @keyframes animarDinoMobile as it's no longer needed */
 
     .qr {
             display: none;
@@ -287,30 +254,27 @@ body {
                 max-height: 350px; /* Adjust max-height */
             }
 
-            .dino {
-                height: 12vh; /* Slightly larger dino on mobile for better visibility/playability */
-                width: 12vh;
-                bottom: 4%;
-                left: 3%;
-                background-size: calc(4 * 12vh) 12vh;
+            .contenedor {
+                width: 100%; /* Ocupa el 100% del ancho en pantallas pequeñas */
+                margin: 3vh auto; /* Smaller margin for mobile */
+                min-height: 200px; /* Adjust min-height for smaller screens */
+                max-height: 350px; /* Adjust max-height */
             }
 
-            .dino-estrellado {
-                background-position-x: calc(-3 * 12vh);
+            /* Redefine dino-frame-width for mobile */
+            :root { /* This might not work as expected, media query should target actual properties or a class on body/container */
+                 /* Better to set it on .dino or .container if :root doesn't update as expected */
             }
-            
-            @keyframes animarDinoMobile { /* Separate animation for potentially different dino size */
-                from {
-                    background-position-x: calc(-1 * 12vh);
-                }
-                to {
-                    background-position-x: calc(-2 * 12vh);
-                }
-            }
-            .dino-corriendo { /* Apply the mobile-specific animation */
-                animation-name: animarDinoMobile;
-            }
-
+            /* Let's redefine it directly where it's used or on a parent that is specific enough */
+             .dino { /* This will apply inside the media query */
+                --dino-frame-width: var(--dino-size-mobile);
+                /* Properties like width, height, background-size on .dino will automatically use this due to var() */
+                /* The animation @keyframes animarDino will also pick up the changed --dino-frame-width */
+                 bottom: 4%; /* Mobile specific adjustments if needed */
+                 left: 3%;   /* Mobile specific adjustments if needed */
+             }
+            /* No need to redefine .dino-estrellado or .dino-corriendo animation here if animarDino uses the var */
+            /* No need for animarDinoMobile keyframes anymore */
 
             .suelo {
                 height: 12%; /* Adjust suelo height */
@@ -508,9 +472,11 @@ function Saltar() {
     if (parado) {
         ReiniciarJuego();
     } else if (dinoPosY === sueloY) {
+        console.log("Saltar: quitando dino-corriendo");
         saltando = true;
         velY = impulso;
-        dino.classList.remove("dino-corriendo");
+        dino.classList.remove("dino-corriendo"); // Dino will show frame 0 (static)
+        // No specific "dino-saltando" class/style is applied, so it uses the base .dino style (frame 0)
 
         // Reproduce el sonido de salto
         var jumpSound = document.getElementById("jumpSound");
@@ -535,6 +501,7 @@ function TocarSuelo() {
     dinoPosY = sueloY;
     velY = 0;
     if(saltando){
+        console.log("TocarSuelo: añadiendo dino-corriendo");
         dino.classList.add("dino-corriendo");
     }
     saltando = false;
