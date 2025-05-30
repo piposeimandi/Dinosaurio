@@ -42,9 +42,11 @@ body {
 .contenedor {
     width: 90%; /* Usa porcentajes para adaptar el ancho al tamaño de la pantalla */
     max-width: 900px; /* Establece un ancho máximo para evitar que crezca demasiado en pantallas grandes */
-    height: 280px;
+    height: 60vh; /* Altura responsiva */
+    min-height: 250px; /* Altura mínima */
+    max-height: 400px; /* Altura máxima */
     
-    margin: 10% auto;
+    margin: 5vh auto; /* Margen superior/inferior responsivo */
     position: relative;
     background: linear-gradient(#b7d6c7, transparent) #ffe2d1;/*linear-gradient(#90ebff, white);*/
     transition: background-color 1s linear;
@@ -64,105 +66,172 @@ body {
 }
 
 .dino {
-    width: 84px;
-    height: 84px;
+    /* width: 84px; height: 84px; */ /* Original dimensions */
+    height: 15%; /* Responsive height relative to container */
+    width: calc(84px / 84px * 15%); /* Maintain aspect ratio, assuming 15% height */
+    /* Calculate width based on new height and original aspect ratio (84/84 = 1)
+       If new height is 15% of container, and aspect ratio is 1, width should also be 15% of container's height.
+       This needs to be dynamic if container height changes. Let's use a fixed aspect ratio approach.
+       Let's set height to 10vh for simplicity and calculate width based on that.
+    */
+    height: 10vh; /* Use vh for dinosaur height */
+    /* Width calculation: original_width / original_height * new_height */
+    /* Original aspect ratio is 84/84 = 1. So width = 1 * 10vh = 10vh */
+    width: 10vh; 
+
 
     position: absolute;
-    bottom: 22px;
-    left: 42px;
+    /* bottom: 22px; */ /* Original bottom */
+    bottom: 5%; /* Responsive bottom relative to container height */
+    /* left: 42px; */ /* Original left */
+    left: 5%; /* Responsive left relative to container width */
     z-index: 2;
 
     background: url(img/dino.png) repeat-x 0px 0px;
-    background-size: 336px 84px;
+    /* background-size: 336px 84px; */ /* Original background size */
+    /* New background-size: (original_bg_width / original_dino_height * new_dino_height) new_dino_height */
+    /* (336 / 84 * 10vh) 10vh  = 40vh 10vh */
+    background-size: calc(4 * 10vh) 10vh; /* Scaled background size */
     background-position-x: 0px;
 
 }
 
 .dino-corriendo {
+    /* animation: animarDino 0.25s steps(2) infinite; */
+    /* Frame width is new_dino_width, which is 10vh.
+       The animation moves by one frame width.
+       So from -10vh to -30vh (for steps(2), it means positions for frame 2 and frame 3 if 0 is frame 1)
+       Original animation from -84px to -252px.
+       Frame 1: 0px
+       Frame 2 (step 1 in animation): -84px (original_width_frame1)
+       Frame 3 (step 2 in animation): -168px (original_width_frame2, not -252px for steps(2))
+       Let's adjust animarDino keyframes instead of direct properties here.
+    */
     animation: animarDino 0.25s steps(2) infinite;
 }
 .dino-estrellado {
-    background-position-x: -252px;
+    /* background-position-x: -252px; */ /* Original. This is frame 4 (dino_width * 3) */
+    /* New position: -(new_dino_width * 3) = -(10vh * 3) = -30vh */
+    background-position-x: calc(-3 * 10vh); /* Scaled background position */
 }
 
 .suelo {
     width: 200%;
-    height: 42px;
+    /* height: 42px; */ /* Original height */
+    height: 10%; /* Responsive height relative to container */
 
     position: absolute;
     bottom: 0;
     left: 0;
 
     background: url(img/suelo.png) repeat-x 0px 0px;
-    background-size: 50% 42px;
+    /* background-size: 50% 42px; */ /* Original background size */
+    /* New height is 10% of container. Original image height was 42px.
+       So, background-size: 50% new_height;
+    */
+    background-size: 50% 100%; /* Make background image cover the full height of .suelo */
 
 }
 
 .cactus{
-    width: 46px;
-    height: 96px;
+    /* width: 46px; height: 96px; */ /* Original dimensions */
+    /* Let's scale based on container height, similar to dino */
+    height: 20%; /* Example: 20% of container height */
+    width: calc(46px / 96px * 20%); /* Maintain aspect ratio */
+    /* width: 5vh; height: 10vh; */ /* Alternative using vh */
+
 
     position: absolute;
-    bottom: 16px;
-    left: 600px;
+    /* bottom: 16px; */ /* Original bottom */
+    bottom: 4%; /* Relative to container height, slightly above suelo */
+    left: 600px; /* Will be handled by JS, but responsive units could be explored if JS wasn't setting it */
     z-index: 1;
 
     background: url(img/cactus1.png) no-repeat;
+    background-size: contain; /* Scale background image to fit within element */
 }
-.cactus2{
-    width: 98px;
-    height: 66px;
-
+.cactus2{ /* This class is added to .cactus, so it inherits .cactus dimensions if not overridden */
+    /* width: 98px; height: 66px; */ /* Original dimensions for type 2 cactus */
+    /* If .cactus height is 20%, then for cactus2: */
+    /* New width: (98/66) * new_height_of_cactus_element */
+    /* This requires JS to adjust width based on which cactus type or use different classes */
+    /* For now, let's assume JS handles the switch and we provide a base responsive size for .cactus */
+    /* If .cactus2 is a modifier, its specific background image should also scale. */
+    /* This might need more specific handling if aspect ratios differ significantly */
+    width: calc(98px / 66px * 20%); /* Maintain aspect ratio for cactus2 type, assuming .cactus height is 20% */
     background: url(img/cactus2.png) no-repeat;
+    background-size: contain; /* Scale background image */
 }
 
 .nube{
-    width: 92px;
-    height: 26px;
+    /* width: 92px; height: 26px; */ /* Original dimensions */
+    width: 10vw; /* Responsive width */
+    height: calc(26px / 92px * 10vw); /* Maintain aspect ratio */
 
     position: absolute;
     z-index: 0;
 
     background: url(img/nube.png) no-repeat;
-    background-size: 92px 26px;
+    background-size: contain; /* Scale background image */
 }
 
 .score{
-    width: 100px;
-    height: 30px;
-
+    /* width: 100px; height: 30px; */ /* Original dimensions */
     position: absolute;
-    top: 5px;
-    right: 15px;
+    top: 1vh; /* Responsive top */
+    right: 2vw; /* Responsive right */
     z-index: 10;
 
     color: #d48871;
     font-family: Verdana;
-    font-size: 30px;
+    /* font-size: 30px; */ /* Original font size */
+    font-size: 3vh; /* Responsive font size */
     font-weight: bold;
     text-align: right;
 }
 
 .game-over{
     display: none;
-
     position: absolute;
     width: 100%;
-
-
     text-align: center;
     color: #7e928b;
-    font-size: 30px;
+    /* font-size: 30px; */ /* Original font size */
+    font-size: 5vh; /* Responsive font size */
     font-family: Verdana;
     font-weight: 700;
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust vertical centering */
 }
 
     @keyframes animarDino{
         from{
-            background-position-x: -84px;
+            /* background-position-x: -84px; */ /* Original, dino_width */
+            background-position-x: calc(-1 * 10vh); /* -new_dino_width */
         }
         to{
-            background-position-x: -252px;
+            /* background-position-x: -252px; */ /* Original, dino_width * 3 for steps(2) means frame 2 and 3 */
+            /* steps(2) means it alternates between two positions.
+               If 'from' is frame 2 (width * 1), 'to' should be frame 3 (width * 2)
+               The animation goes from state 1 to state 2.
+               State 1: background-position-x: calc(-1 * 10vh); (Image frame 2)
+               State 2: background-position-x: calc(-2 * 10vh); (Image frame 3)
+               The original 'to' was -252px which is 3 * 84px. This implies 3 frames in the sprite sheet are used.
+               Sprite sheet: Frame 0 (idle), Frame 1 (run1), Frame 2 (run2), Frame 3 (crashed)
+               dino-corriendo uses frames 1 and 2.
+               So, background-position-x should be -frame_width for frame 1, and -frame_width*2 for frame 2.
+               Original: from -84px (frame 1) to -252px. This seems wrong for steps(2).
+               steps(2) means it will jump between two values.
+               If the sprite has 4 images for dino (0, 1, 2, 3) each 10vh wide:
+               Initial state (not running): 0px
+               Running anim step 1: -10vh (image 2)
+               Running anim step 2: -20vh (image 3)
+               Crashed state: -30vh (image 4)
+
+               Let's assume the animation is for the two running frames.
+               So, from -10vh (second frame in sprite) to -20vh (third frame in sprite)
+            */
+            background-position-x: calc(-2 * 10vh);
         }
     }
 
@@ -170,27 +239,114 @@ body {
     .qr {
             display: none;
             position: fixed;
-            top: 110px;
+            top: 15vh; /* Adjusted top */
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             color: #d48871;
             font-family: Verdana;
-            font-size: 30px;
+            /* font-size: 30px; */ /* Original font size */
+            font-size: 2.5vh; /* Responsive font size */
             font-weight: bold;
             z-index: 1000; /* Ajusta el índice z para asegurarte de que esté encima de otros elementos */
         }
 
         .qr img {
-            height: 5vw; /* Usa unidades relativas como vw (viewport width) para adaptar al tamaño de la pantalla */
+            height: 8vh; /* Adjusted from 5vw to be relative to viewport height */
+        }
+        
+        /* Base styles for desktop (>= 992px) are above */
+
+        /* Tablet (ej. min-width: 768px y max-width: 991px) */
+        @media only screen and (min-width: 768px) and (max-width: 991px) {
+            .contenedor {
+                margin: 7vh auto; /* Slightly larger margin for tablets */
+            }
+            .score {
+                font-size: 2.5vh;
+            }
+            .game-over {
+                font-size: 4vh;
+            }
+            .qr {
+                font-size: 2vh;
+            }
+            .qr img {
+                height: 7vh;
+            }
         }
 
-        @media only screen and (max-width: 600px) {
-            /* Estilos específicos para pantallas pequeñas */
+
+        /* Móvil (ej. max-width: 767px) */
+        /* This also covers the old max-width: 600px query */
+        @media only screen and (max-width: 767px) {
             .contenedor {
                 width: 100%; /* Ocupa el 100% del ancho en pantallas pequeñas */
+                margin: 3vh auto; /* Smaller margin for mobile */
+                min-height: 200px; /* Adjust min-height for smaller screens */
+                max-height: 350px; /* Adjust max-height */
             }
-            /* ... (otros estilos específicos) ... */
+
+            .dino {
+                height: 12vh; /* Slightly larger dino on mobile for better visibility/playability */
+                width: 12vh;
+                bottom: 4%;
+                left: 3%;
+                background-size: calc(4 * 12vh) 12vh;
+            }
+
+            .dino-estrellado {
+                background-position-x: calc(-3 * 12vh);
+            }
+            
+            @keyframes animarDinoMobile { /* Separate animation for potentially different dino size */
+                from {
+                    background-position-x: calc(-1 * 12vh);
+                }
+                to {
+                    background-position-x: calc(-2 * 12vh);
+                }
+            }
+            .dino-corriendo { /* Apply the mobile-specific animation */
+                animation-name: animarDinoMobile;
+            }
+
+
+            .suelo {
+                height: 12%; /* Adjust suelo height */
+            }
+
+            .cactus {
+                height: 18%;
+                width: calc(46px / 96px * 18%);
+                bottom: 3.5%;
+            }
+            .cactus2 {
+                width: calc(98px / 66px * 18%);
+            }
+
+            .nube {
+                width: 15vw;
+                height: calc(26px / 92px * 15vw);
+            }
+
+            .score {
+                font-size: 3.5vh;
+                top: 0.5vh;
+                right: 1vw;
+            }
+
+            .game-over {
+                font-size: 4.5vh;
+            }
+            
+            .qr {
+                font-size: 1.8vh;
+                top: 10vh;
+            }
+            .qr img {
+                height: 10vh;
+            }
         }
 
     </style>
@@ -254,16 +410,16 @@ function Loop() {
 
 //****** GAME LOGIC ********//
 
-var sueloY = 22;
+var sueloY; // Will be calculated in Start()
 var velY = 0;
-var impulso = 900;
-var gravedad = 2500;
+var impulso; // Will be set in Start()
+var gravedad; // Will be set in Start()
 
-var dinoPosX = 42;
-var dinoPosY = sueloY; 
+var dinoPosX; // Will be calculated in Start()
+var dinoPosY; // Will be calculated in Start()
 
 var sueloX = 0;
-var velEscenario = 1280/3;
+var velEscenario; // Will be set in Start()
 var gameVel = 1;
 var score = 0;
 
@@ -273,14 +429,14 @@ var saltando = false;
 var tiempoHastaObstaculo = 2;
 var tiempoObstaculoMin = 0.7;
 var tiempoObstaculoMax = 1.8;
-var obstaculoPosY = 16;
+var obstaculoPosY; // Will be calculated in Start()
 var obstaculos = [];
 
 var tiempoHastaNube = 0.5;
 var tiempoNubeMin = 0.7;
 var tiempoNubeMax = 2.7;
-var maxNubeY = 270;
-var minNubeY = 100;
+var maxNubeY; // Will be calculated in Start()
+var minNubeY; // Will be calculated in Start()
 var nubes = [];
 var velNube = 0.5;
 
@@ -298,10 +454,33 @@ function Start() {
     contenedor = document.querySelector(".contenedor");
     textoScore = document.querySelector(".score");
     dino = document.querySelector(".dino");
-    document.addEventListener("keydown", HandleKeyDown);
 
+    // Calculate dynamic values after DOM is ready and CSS applied
+    sueloY = parseFloat(getComputedStyle(dino).bottom);
+    dinoPosX = parseFloat(getComputedStyle(dino).left);
+    dinoPosY = sueloY;
+    
+    // Assuming cactus bottom is 4% of container height as per CSS (.cactus { bottom: 4%; })
+    // This is for the initial position, JS controls 'left' for movement
+    obstaculoPosY = 0.04 * contenedor.clientHeight; 
+
+    // Adjust physics parameters - these are experimental
+    impulso = 700; // Original 900
+    gravedad = 2000; // Original 2500
+    
+    // Adjust cloud generation Y coordinates
+    minNubeY = contenedor.clientHeight * 0.25;
+    maxNubeY = contenedor.clientHeight * 0.80;
+
+    // Adjust scenario velocity
+    velEscenario = contenedor.clientWidth / 3; // Original 1280/3
+
+    document.addEventListener("keydown", HandleKeyDown);
     document.addEventListener("click", function() {  Saltar(); });
     
+    // Ensure dino is correctly positioned at start, especially if ReiniciarJuego calls Start
+    dino.style.bottom = dinoPosY + "px";
+    dino.style.left = dinoPosX + "px";
 }
 
 function Update() {
@@ -505,7 +684,9 @@ function DetectarColision() {
             //EVADE
             break; //al estar en orden, no puede chocar con más
         }else{
-            if(IsCollision(dino, obstaculos[i], 10, 30, 15, 20)) {
+            // Adjusted padding values for IsCollision. Original: 10, 30, 15, 20
+            // These are experimental and might need further tuning.
+            if(IsCollision(dino, obstaculos[i], 5, 10, 5, 5)) {
                 GameOver();
             }
         }
@@ -555,7 +736,8 @@ function ReiniciarJuego() {
     // Reinicia el texto del marcador
     textoScore.innerText = "0";
 
-    // Llama a la función Start para configurar el juego nuevamente
+    // Llama a la función Start para configurar el juego nuevamente, 
+    // which will re-calculate positions based on current container size.
     Start();
 }
 
